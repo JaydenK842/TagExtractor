@@ -49,7 +49,7 @@ public class FileReaderRunner extends JFrame {
         frame.add(buttonPanel);
 
         try {
-            File selectedFile = new File("src/EnglishStopWords.txt");
+            File selectedFile = new File("src/EnglishUpdated.txt");
             Path file = selectedFile.toPath();
 
             InputStream in =
@@ -149,17 +149,16 @@ public class FileReaderRunner extends JFrame {
                 }
 
                 for (String key : allWords) {
-                    if (tags.get(key) < 10 || tags.get(key) == 3211) {
+                    if (tags.get(key) < 13 || tags.get(key) == 3211) {
                         tags.remove(key);
-                    } else if (key.contains("\"") || key.contains(".") || key.contains(",") || key.contains("“")) {
+                    } else if (key.contains("\"") || key.contains(".") || key.contains(",") || key.contains("“") || key.contains("]")) {
                         tags.remove(key);
                     } else {
                         tagFrequency.append(key + ": " + tags.get(key) + "\n");
                     }
                 }
             } else {
-                System.out.println("Failed to choose a file.");
-                System.exit(0);
+                JOptionPane.showMessageDialog(frame, "Failed to choose a file.");
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -170,6 +169,13 @@ public class FileReaderRunner extends JFrame {
 
     private void fileSave(JTextArea tagFrequency) {
         String newFileName = JOptionPane.showInputDialog(frame, "Name the File:");
+
+        if (newFileName == null) {
+            return;
+        } else if (newFileName.equals("") || newFileName.contains(" ")) {
+            JOptionPane.showMessageDialog(frame, "That is not a viable name.");
+            return;
+        }
 
         File workingDirectory = new File(System.getProperty("user.dir"));
         Path file = Paths.get(workingDirectory.getPath() + "\\src\\" + newFileName + ".txt");
@@ -183,7 +189,7 @@ public class FileReaderRunner extends JFrame {
             writer.write(tagFrequency.getText());
 
             writer.close();
-            System.out.println("Your file has been wrote!");
+            JOptionPane.showMessageDialog(frame, "Your file has been saved!");
         } catch (IOException e) {
             e.printStackTrace();
         }
